@@ -43,4 +43,19 @@ export const updateTask = async (req, res) => {
         console.error("error al actualizar la tarea", error);
         res.status(500).json({ error: "Error del servidor" });
     }
-}
+};
+
+export const deleteTask = async (req, res) => {
+    try {
+        const taskId = await Task.findByPk(req.params.id);
+        if (taskId){
+            await taskId.destroy();
+            res.json({ message: "Tarea eliminada" });
+        } else {
+            res.status(404).json({ error: "Tarea no encontrada" });
+        };
+    } catch (error) {
+        console.error("error al eliminar la tarea", error);
+        res.status(500).json({ error: "Error del servidor" });
+    }
+};
