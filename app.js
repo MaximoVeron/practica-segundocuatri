@@ -1,6 +1,7 @@
 import express from "express";
 import {initDB} from "./src/config/db.js";
 import usersRouter from "./src/routes/users.routes.js";
+import tasksRouter from "./src/routes/tasks.routes.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -16,3 +17,4 @@ app.listen (PORT, () =>{
 })
 
 app.use("/api", usersRouter);
+app.use("/api", tasksRouter);
