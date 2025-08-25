@@ -26,6 +26,19 @@ export const getUserById = async (req, res) => {
 
 export const createUser = async (req, res) => {
     try {
+        if (!req.body.name || req.body.name.trim() === "") {
+            return res.status(400).json({ error: "El nombre es obligatorio" });
+        } 
+        if (req.body.name.length>100){
+            return res.status(400).json({ error: "El nombre no puede tener más de 100 caracteres" });
+        }
+        const existingEmail = await User.findOne({ where: { email: req.body.email } });
+        if (existingEmail) {
+            return res.status(400).json({ error: "El email ya está en uso" });
+        }
+        if (!req.body.password || req.body.password.trim() === "") {
+            return res.status(400).json({ error: "La contraseña es obligatoria" });
+        }
         const newUser = await User.create(req.body);
         res.status(201).json(newUser);
     } catch (error) {
@@ -51,6 +64,19 @@ export const deleteUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     try {
+         if (!req.body.name || req.body.name.trim() === "") {
+            return res.status(400).json({ error: "El nombre es obligatorio" });
+        } 
+        if (req.body.name.length>100){
+            return res.status(400).json({ error: "El nombre no puede tener más de 100 caracteres" });
+        }
+        const existingEmail = await User.findOne({ where: { email: req.body.email } });         
+        if (existingEmail && existingEmail.id !== req.params.id) {
+        return res.status(400).json({ error: "El email ya está en uso" });
+        }
+        if (!req.body.password || req.body.password.trim() === "") {
+            return res.status(400).json({ error: "La contraseña es obligatoria" });
+        }
         const usuario = await User.findByPk(req.params.id);
         if (usuario){
             await usuario.update(req.body);

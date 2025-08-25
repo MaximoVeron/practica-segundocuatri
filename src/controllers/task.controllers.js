@@ -13,6 +13,9 @@ export const getAllTask = async (req, res) => {
 export const getTaskById = async (req, res) => {
     try {
         const taskId = await Task.findByPk(req.params.id);
+        if (!taskId) {
+            return res.status(404).json({ error: "Tarea no encontrada" });
+        }
         res.json(taskId);
     } catch (error) {
         console.error("error al traer la tarea", error);
@@ -22,6 +25,18 @@ export const getTaskById = async (req, res) => {
 
 export const createTask = async (req, res) => {
     try{
+        if (!req.body.title || req.body.title.trim() === "") {
+            return res.status(400).json({ error: "El título es obligatorio" });
+        }
+        if (req.body.title.length>100){
+            return res.status(400).json({ error: "El título no puede tener más de 100 caracteres" });
+        }
+        if (req.body.description.length>100) {
+            return res.status(400).json({ error: "La descripción no puede tener más de 100 caracteres" });
+        }
+        if (!req.body.description || req.body.description.trim() === "") {
+            return res.status(400).json({ error: "La descripción es obligatoria" });
+        }
         const newTask = await Task.create(req.body);
         res.json(newTask);
     } catch (error) {
@@ -32,6 +47,18 @@ export const createTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
     try {
+        if (!req.body.title || req.body.title.trim() === "") {
+            return res.status(400).json({ error: "El título es obligatorio" });
+        }
+        if (req.body.title.length>100){
+            return res.status(400).json({ error: "El título no puede tener más de 100 caracteres" });
+        }
+        if (req.body.description.length>100) {
+            return res.status(400).json({ error: "La descripción no puede tener más de 100 caracteres" });
+        }
+        if (!req.body.description || req.body.description.trim() === "") {
+            return res.status(400).json({ error: "La descripción es obligatoria" });
+        }
         const taskId = await Task.findByPk(req.params.id);
         if (taskId){
             await taskId.update(req.body);
