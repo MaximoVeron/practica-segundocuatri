@@ -5,13 +5,13 @@ const Task = sequelize.define(
   'task',
   {
     // Model attributes are defined here
-    Title: {
+    title: {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    Description: {
+    description: {
       type: DataTypes.STRING(100),
-      // allowNull defaults to true
+      allowNull: false,
     },
     isCompleted: {
         type: DataTypes.BOOLEAN,
