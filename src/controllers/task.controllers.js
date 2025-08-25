@@ -1,4 +1,5 @@
 import Task from "../models/tasks.models.js";
+import {User } from "../models/index.models.js";
 
 export const getAllTask = async (req, res) => {
     try {
@@ -25,19 +26,25 @@ export const getTaskById = async (req, res) => {
 
 export const createTask = async (req, res) => {
     try{
-        if (!req.body.title || req.body.title.trim() === "") {
+        const { title, description, user_id } = req.body;
+        if (!title || title.trim() === "") {
             return res.status(400).json({ error: "El título es obligatorio" });
         }
-        if (req.body.title.length>100){
+        if (title.length>100){
             return res.status(400).json({ error: "El título no puede tener más de 100 caracteres" });
         }
-        if (req.body.description.length>100) {
+        if (description.length>100) {
             return res.status(400).json({ error: "La descripción no puede tener más de 100 caracteres" });
         }
-        if (!req.body.description || req.body.description.trim() === "") {
+        if (!description || description.trim() === "") {
             return res.status(400).json({ error: "La descripción es obligatoria" });
         }
-        const newTask = await Task.create(req.body);
+        // veridficacion de existencia para las relaciones 
+        const user = await User.findByPk(user_id);
+        if (!user) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+        const newTask = await Task.create({ title, description, user_id });
         res.json(newTask);
     } catch (error) {
         console.error("error al crear la tarea", error);
